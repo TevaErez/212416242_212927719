@@ -6,7 +6,7 @@
   } ],
   "info" : {
     "version" : "1.0.0",
-    "title" : "Grandma and friends recipes",
+    "title" : "Grandma and friends's recipes",
     "description" : "The Recipes Website API provides developers with access to a comprehensive collection of recipes and related information from a recipes website. It allows developers to integrate recipe data into their own applications, websites, or services, enabling users to search for recipes, retrieve detailed recipe information, and perform various recipe-related actions."
   },
   "paths" : {
@@ -50,13 +50,10 @@
         }
       }
     },
-    "paths" : null,
     "/register" : {
       "post" : {
-        "tags" : [ "register" ],
-        "operationId" : "register",
+        "tags" : [ "Register" ],
         "requestBody" : {
-          "description" : "User details",
           "required" : true,
           "content" : {
             "application/json" : {
@@ -65,11 +62,38 @@
                 "properties" : {
                   "username" : {
                     "type" : "string",
-                    "description" : "The user's username"
+                    "minLength" : 3,
+                    "maxLength" : 8,
+                    "pattern" : "^[A-Za-z]+$",
+                    "description" : "The username for the new user"
+                  },
+                  "firstName" : {
+                    "type" : "string",
+                    "description" : "The first name of the new user"
+                  },
+                  "lastName" : {
+                    "type" : "string",
+                    "description" : "The last name of the new user"
+                  },
+                  "country" : {
+                    "type" : "string",
+                    "description" : "The country of the new user"
                   },
                   "password" : {
                     "type" : "string",
-                    "description" : "The user's password"
+                    "minLength" : 5,
+                    "maxLength" : 10,
+                    "pattern" : "^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]+$",
+                    "description" : "The password for the new user"
+                  },
+                  "confirmPassword" : {
+                    "type" : "string",
+                    "description" : "Confirm the password for the new user"
+                  },
+                  "email" : {
+                    "type" : "string",
+                    "format" : "email",
+                    "description" : "The email for the new user"
                   }
                 }
               }
@@ -77,14 +101,27 @@
           }
         },
         "responses" : {
-          "201" : {
-            "description" : "User account created successfully"
+          "200" : {
+            "description" : "Successful registration",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "properties" : {
+                    "token" : {
+                      "type" : "string",
+                      "description" : "The authentication token for the new user"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400" : {
-            "description" : "Invalid request data"
+            "description" : "Invalid request - the username is already taken or the passwords do not match or the country doesn't exist"
           },
-          "409" : {
-            "description" : "Username already exists"
+          "500" : {
+            "description" : "Internal server error - the registration could not be completed"
           }
         }
       }
