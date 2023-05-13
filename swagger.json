@@ -3,6 +3,9 @@
   "servers" : [ {
     "description" : "SwaggerHub API Auto Mocking",
     "url" : "https://virtserver.swaggerhub.com/TEVAER_1/proj3/1.0.0"
+  }, {
+    "description" : "URL NOT VALID",
+    "url" : "https://server.com"
   } ],
   "info" : {
     "version" : "1.0.0",
@@ -12,7 +15,7 @@
   "paths" : {
     "/login" : {
       "get" : {
-        "tags" : [ "login" ],
+        "tags" : [ "User" ],
         "operationId" : "getToken",
         "parameters" : [ {
           "name" : "username",
@@ -37,12 +40,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "type" : "object",
-                  "properties" : {
-                    "token" : {
-                      "type" : "string"
-                    }
-                  }
+                  "$ref" : "#/components/schemas/userToken"
                 }
               }
             }
@@ -52,53 +50,13 @@
     },
     "/register" : {
       "post" : {
-        "tags" : [ "Register" ],
+        "tags" : [ "User" ],
         "requestBody" : {
           "required" : true,
           "content" : {
             "application/json" : {
               "schema" : {
-                "type" : "object",
-                "properties" : {
-                  "username" : {
-                    "type" : "string",
-                    "minLength" : 3,
-                    "maxLength" : 8,
-                    "pattern" : "^[A-Za-z]+$",
-                    "description" : "The username for the new user"
-                  },
-                  "firstName" : {
-                    "type" : "string",
-                    "description" : "The first name of the new user"
-                  },
-                  "lastName" : {
-                    "type" : "string",
-                    "description" : "The last name of the new user"
-                  },
-                  "country" : {
-                    "type" : "string",
-                    "description" : "The country of the new user"
-                  },
-                  "password" : {
-                    "type" : "string",
-                    "minLength" : 5,
-                    "maxLength" : 10,
-                    "pattern" : "^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]+$",
-                    "description" : "The password for the new user"
-                  },
-                  "confirmPassword" : {
-                    "type" : "string",
-                    "description" : "Confirm the password for the new user",
-                    "const" : {
-                      "$data" : "1/password"
-                    }
-                  },
-                  "email" : {
-                    "type" : "string",
-                    "format" : "email",
-                    "description" : "The email for the new user"
-                  }
-                }
+                "$ref" : "#/components/schemas/userDetails"
               }
             }
           }
@@ -109,13 +67,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "type" : "object",
-                  "properties" : {
-                    "token" : {
-                      "type" : "string",
-                      "description" : "The authentication token for the new user"
-                    }
-                  }
+                  "$ref" : "#/components/schemas/userToken"
                 }
               }
             }
@@ -127,6 +79,449 @@
             "description" : "Internal server error - the registration could not be completed"
           }
         }
+      }
+    },
+    "/favorites" : {
+      "get" : {
+        "tags" : [ "User" ],
+        "description" : "returns favorites",
+        "operationId" : "getFavorites",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "token",
+          "example" : "b%gd8Y82e8)*@#$%djsdh9@UEDWndiw0J",
+          "description" : "special token for authentication",
+          "schema" : {
+            "$ref" : "#/components/schemas/userToken"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "recipe with given recipe id",
+            "content" : {
+              "json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/recipesGet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/addFavorite" : {
+      "post" : {
+        "tags" : [ "User" ],
+        "operationId" : "adds a favorite recipe",
+        "requestBody" : {
+          "content" : {
+            "json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/recipeGet"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "successfully added a favorite"
+          }
+        }
+      }
+    },
+    "/recipes" : {
+      "get" : {
+        "tags" : [ "Recipes" ],
+        "description" : "returns list of all recipes in the site",
+        "operationId" : "getAllRecipes",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "skip",
+          "description" : "number of recipes to skip",
+          "schema" : {
+            "type" : "integer"
+          }
+        }, {
+          "in" : "query",
+          "name" : "limit",
+          "description" : "max number of recipes to return",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "All the recipes",
+            "content" : {
+              "json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/recipesGet"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recipe" : {
+      "get" : {
+        "tags" : [ "Recipes" ],
+        "description" : "return recipes by id",
+        "operationId" : "getRecipe",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "recipe id",
+          "description" : "id of the recipe you want to get",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "recipe with given recipe id",
+            "content" : {
+              "json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/recipeGet"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Recipes" ],
+        "operationId" : "addRecipe",
+        "responses" : {
+          "200" : {
+            "description" : "successfully add recipe"
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/addRecipe"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/randomRecipes" : {
+      "get" : {
+        "tags" : [ "Recipes" ],
+        "description" : "return random recipes",
+        "operationId" : "getRandoRecipes",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "amount",
+          "example" : 5,
+          "description" : "amount of random recipes you want to get back",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "recipe with given recipe id",
+            "content" : {
+              "json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/recipesGet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lastWatchRecipes" : {
+      "get" : {
+        "tags" : [ "Recipes" ],
+        "description" : "return 3 random recipes",
+        "operationId" : "getLastWatchRecipes",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "amount",
+          "example" : 5,
+          "description" : "amount of last watched recipes you want to get back",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "recipe with given recipe id",
+            "content" : {
+              "json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/recipesGet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/watchedRecipe" : {
+      "post" : {
+        "tags" : [ "Recipes" ],
+        "operationId" : "watchedRecipe",
+        "responses" : {
+          "200" : {
+            "description" : "successfully add recipe"
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/watchedRecipe"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/searchRecipes" : {
+      "get" : {
+        "tags" : [ "Recipes" ],
+        "description" : "returns list of all recipes in the site",
+        "operationId" : "searchRecipes",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "query",
+          "description" : "query the client want to search",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "limit",
+          "description" : "max number of recipes to return",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "All the recipes",
+            "content" : {
+              "json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/recipesGet"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "recipeBase" : {
+        "required" : [ "name", "mainImage", "time", "popularity", "vegiSign", "gluten", "instructions", "numberOfPortions", "ingredients" ],
+        "properties" : {
+          "mainImage" : {
+            "$ref" : "#/components/schemas/image"
+          },
+          "images" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/image"
+            }
+          },
+          "name" : {
+            "type" : "string",
+            "example" : "pancake",
+            "description" : "name of the recipe"
+          },
+          "time" : {
+            "type" : "number",
+            "format" : "float",
+            "example" : 10,
+            "description" : "time in minutes that takes to create the meal"
+          },
+          "popularity" : {
+            "type" : "integer",
+            "example" : 12,
+            "description" : "number of likes the recipe got"
+          },
+          "vegiSign" : {
+            "type" : "string",
+            "example" : "vegan",
+            "description" : "can be\" vegan/ vagiterian/ none"
+          },
+          "gluten" : {
+            "type" : "boolean",
+            "example" : true,
+            "description" : "does the meal include gluten"
+          },
+          "instructions" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "first put 3.5 kg of flour into the mixer",
+              "description" : "array of instuction of the recipe"
+            }
+          },
+          "numberOfPortions" : {
+            "type" : "number",
+            "example" : 7.5,
+            "description" : "the amount of portions from the recipe"
+          },
+          "ingredients" : {
+            "type" : "array",
+            "items" : {
+              "type" : "object",
+              "properties" : {
+                "ingredient" : {
+                  "type" : "string",
+                  "example" : "flour",
+                  "description" : "single ingredient name"
+                },
+                "amount" : {
+                  "type" : "object",
+                  "properties" : {
+                    "amount" : {
+                      "type" : "number",
+                      "example" : 3.5,
+                      "description" : "amount of metrial from unit of measure"
+                    },
+                    "unit" : {
+                      "type" : "string",
+                      "example" : "kg",
+                      "description" : "name of unit of measure"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "addRecipe" : {
+        "required" : [ "userToken", "recipe" ],
+        "properties" : {
+          "userToken" : {
+            "$ref" : "#/components/schemas/userToken"
+          },
+          "recipe" : {
+            "$ref" : "#/components/schemas/recipeBase"
+          }
+        }
+      },
+      "recipeGet" : {
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "example" : 13,
+            "description" : "recipe id"
+          },
+          "recipe" : {
+            "$ref" : "#/components/schemas/recipeBase"
+          }
+        }
+      },
+      "recipesGet" : {
+        "properties" : {
+          "amount" : {
+            "type" : "integer",
+            "example" : 15,
+            "description" : "amount of recipes returned"
+          },
+          "recipes" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/recipeGet"
+            }
+          }
+        }
+      },
+      "image" : {
+        "required" : [ "path" ],
+        "properties" : {
+          "path" : {
+            "type" : "string",
+            "example" : "https://url.com/imag.jpg",
+            "description" : "url to image"
+          }
+        }
+      },
+      "watchedRecipe" : {
+        "properties" : {
+          "userToken" : {
+            "$ref" : "#/components/schemas/userToken"
+          },
+          "id" : {
+            "type" : "integer",
+            "example" : 58,
+            "description" : "id of the recipe user watched"
+          }
+        }
+      },
+      "userToken" : {
+        "properties" : {
+          "token" : {
+            "type" : "string",
+            "example" : "b%gd8Y82e8)*@#$%djsdh9@UEDWndiw0J",
+            "description" : "token of conected user who want to add the recipe"
+          }
+        }
+      },
+      "userDetails" : {
+        "properties" : {
+          "username" : {
+            "type" : "string",
+            "minLength" : 3,
+            "maxLength" : 8,
+            "pattern" : "^[A-Za-z]+$",
+            "example" : "sonGoku",
+            "description" : "The username for the new user"
+          },
+          "firstName" : {
+            "type" : "string",
+            "description" : "The first name of the new user",
+            "example" : "goku"
+          },
+          "lastName" : {
+            "type" : "string",
+            "description" : "The last name of the new user",
+            "example" : "son"
+          },
+          "country" : {
+            "type" : "string",
+            "description" : "The country of the new user",
+            "example" : "Israel"
+          },
+          "password" : {
+            "type" : "string",
+            "minLength" : 5,
+            "maxLength" : 10,
+            "pattern" : "^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]+$",
+            "description" : "The password for the new user",
+            "example" : "kamehameha"
+          },
+          "confirmPassword" : {
+            "type" : "string",
+            "description" : "Confirm the password for the new user",
+            "example" : "kamehameha"
+          },
+          "email" : {
+            "type" : "string",
+            "format" : "email",
+            "description" : "The email for the new user"
+          }
+        },
+        "required" : [ "username", "firstName", "lastName", "country", "password", "confirmPassword", "email" ]
       }
     }
   }
