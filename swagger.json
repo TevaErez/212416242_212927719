@@ -1,8 +1,8 @@
 openapi: 3.0.0
 servers:
   # Added by API Auto Mocking Plugin
-  - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/TEVAER_1/proj3/1.0.0
+   - description: our server url
+    url: https://server.com
 info:
   version: "1.0.0"
   title: Grandma and friends recipes
