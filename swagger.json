@@ -16,6 +16,8 @@
     "/login" : {
       "get" : {
         "tags" : [ "User" ],
+        "summary" : "the user authentication with the server",
+        "description" : "user gives it's username and password and receives it's token",
         "operationId" : "getToken",
         "parameters" : [ {
           "name" : "username",
@@ -51,6 +53,8 @@
     "/register" : {
       "post" : {
         "tags" : [ "User" ],
+        "summary" : "new user added to the website",
+        "description" : "current person gives it's detials to create a new user in the system with a token",
         "requestBody" : {
           "required" : true,
           "content" : {
@@ -84,7 +88,8 @@
     "/getFavorites" : {
       "get" : {
         "tags" : [ "User" ],
-        "description" : "returns favorites",
+        "summary" : "new user added to the website",
+        "description" : "returns favorites recipes by the given token",
         "operationId" : "getFavorites",
         "parameters" : [ {
           "in" : "query",
@@ -112,7 +117,9 @@
     "/addFavorite" : {
       "post" : {
         "tags" : [ "User" ],
-        "operationId" : "adds a favorite recipe",
+        "operationId" : "addFavoriteRrecipe",
+        "summary" : "new favorite recipe added to the website",
+        "description" : "send an id of a recipe for the server to maek it as a favorite recipe",
         "requestBody" : {
           "content" : {
             "json" : {
@@ -127,6 +134,9 @@
         "responses" : {
           "200" : {
             "description" : "successfully added a favorite"
+          },
+          "400" : {
+            "description" : "Invalid ID"
           }
         }
       }
@@ -134,7 +144,8 @@
     "/recipes" : {
       "get" : {
         "tags" : [ "Recipes" ],
-        "description" : "returns list of all recipes in the site",
+        "summary" : "returns list of all recipes in the site",
+        "description" : "send number of recipes to skip and  max number of recipes to return and get the recipes in the range",
         "operationId" : "getAllRecipes",
         "parameters" : [ {
           "in" : "query",
@@ -171,7 +182,8 @@
     "/recipe" : {
       "get" : {
         "tags" : [ "Recipes" ],
-        "description" : "return recipes by id",
+        "summary" : "return recipes by id",
+        "description" : "send recipe id and get its full content",
         "operationId" : "getRecipe",
         "parameters" : [ {
           "in" : "query",
@@ -216,7 +228,8 @@
     "/randomRecipes" : {
       "get" : {
         "tags" : [ "Recipes" ],
-        "description" : "return random recipes",
+        "summary" : "return random recipes",
+        "description" : "send amount of random recipes to recieve from server",
         "operationId" : "getRandoRecipes",
         "parameters" : [ {
           "in" : "query",
@@ -244,7 +257,8 @@
     "/lastWatchRecipes" : {
       "get" : {
         "tags" : [ "Recipes" ],
-        "description" : "return 3 random recipes",
+        "summary" : "return last n watched recipes",
+        "description" : "send a number n and the server sends back the n last recipes",
         "operationId" : "getLastWatchRecipes",
         "parameters" : [ {
           "in" : "query",
@@ -273,9 +287,11 @@
       "post" : {
         "tags" : [ "Recipes" ],
         "operationId" : "watchedRecipe",
+        "summary" : "add recipe to watch list",
+        "description" : "add a recipe to watches recipes list in server's side",
         "responses" : {
           "200" : {
-            "description" : "successfully add recipe"
+            "description" : "successfully add recipe to watch list"
           }
         },
         "requestBody" : {
@@ -292,12 +308,13 @@
     "/searchRecipes" : {
       "get" : {
         "tags" : [ "Recipes" ],
-        "description" : "returns list of all recipes in the site",
+        "summary" : "returns list of all recipes in the site",
+        "description" : "sends number of recipes from server's database to client",
         "operationId" : "searchRecipes",
         "parameters" : [ {
           "in" : "query",
-          "name" : "query",
-          "description" : "query the client want to search",
+          "name" : "filter",
+          "description" : "filters the client want to search",
           "schema" : {
             "type" : "string"
           }
@@ -311,7 +328,7 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "All the recipes",
+            "description" : "All the recipes the user wanted",
             "content" : {
               "json" : {
                 "schema" : {
