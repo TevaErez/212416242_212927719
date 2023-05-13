@@ -81,7 +81,7 @@
         }
       }
     },
-    "/favorites" : {
+    "/getFavorites" : {
       "get" : {
         "tags" : [ "User" ],
         "description" : "returns favorites",
@@ -117,7 +117,9 @@
           "content" : {
             "json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/recipeGet"
+                "type" : "string",
+                "description" : "recipe's Id",
+                "example" : 13
               }
             }
           }
