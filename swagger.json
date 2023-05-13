@@ -236,14 +236,15 @@ components:
           $ref: '#/components/schemas/recipeBase'
     recipesGet:
       properties:
-        recipes:
-          type: array
-          items:
-            $ref: '#/components/schemas/recipesGet'
         amount:
           type: integer
           example: 15
           description: amount of recipes returned
+        recipes:
+          type: array
+          items:
+            $ref: '#/components/schemas/recipeGet'
+       
     image:
       required:
         - path
